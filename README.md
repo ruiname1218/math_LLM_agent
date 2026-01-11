@@ -24,8 +24,10 @@ A sophisticated **multi-model AI system** for solving complex mathematical probl
                               └──────┬───────┘
                                      ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│  Stage 1: DECOMPOSITION                                                     │
-│  GPT-5.2 Pro + Grok-4.2 Heavy (並列) → 10-20 アプローチ仮説                   │
+│  Stage 1: DECOMPOSITION (3-Model Parallel)                                  │
+│  ├── GPT-5.2 Pro      → 10-20 アプローチ仮説生成                             │
+│  ├── Grok-4.2 Heavy   → 創造的・非従来型の分析                               │
+│  └── Claude Opus 4.5  → 反例探索・エッジケース・罠の検出                      │
 └─────────────────────────────────────────────────────────────────────────────┘
                                      │
                                      ▼
@@ -162,6 +164,7 @@ math_LLM/
 |-------|-------|------|
 | **GPT-5.2 Pro** | 1,2,3,5 | 中央コーディネーター |
 | **Grok-4.2 Heavy** | 1 | 創造的問題分解 |
+| **Claude Opus 4.5** | 1 | 反例探索・エッジケース・罠の検出 |
 | **Gemini 3 Pro** | 2 | AlphaEvolve探索コード生成 |
 | **DeepSeek-Math-V2** | 3,4 | 証明推敲 + Lean4コード生成 |
 | **Aristotle** | 4 | Lean4形式化 (PRIMARY) |
