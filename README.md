@@ -118,6 +118,7 @@ Open [http://localhost:7860](http://localhost:7860) in your browser.
 |-----|-------|---------|
 | `OPENAI_API_KEY` | GPT-5.2 Pro | 中央コーディネーター |
 | `GOOGLE_API_KEY` | Gemini 3 Pro | AlphaEvolve探索 |
+| `ANTHROPIC_API_KEY` | Claude Opus 4.5 | 反例・エッジケース分析 |
 
 ### Required for Lean4 Verification
 
