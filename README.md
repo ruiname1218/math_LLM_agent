@@ -10,6 +10,7 @@ A sophisticated **multi-model AI system** for solving complex mathematical probl
 - **Aristotle**: Harmonic AIのLean4ネイティブ形式化モデル
 - **AlphaEvolve Exploration**: Pattern discovery through computational exploration
 - **Web UI**: Beautiful Gradio interface with real-time pipeline visualization
+- **OpenRouter Support**: 1つのAPIキーで複数モデルを使用可能
 
 ## 🏗️ Architecture
 
@@ -51,7 +52,7 @@ A sophisticated **multi-model AI system** for solving complex mathematical probl
 │  │       ↓ (失敗時最大3回修正)                                           │   │
 │  │  [エラー時] DeepSeek-Math でLean4コード再生成                          │   │
 │  └─────────────────────────────────────────────────────────────────────┘   │
-│                                     │                                       │
+│                                    │                                       │
 │              ┌──────────────────────┼──────────────────────┐               │
 │              ▼                      ▼                      ▼               │
 │       ✅ RIGOROUS              ⚠️ PARTIAL              ❌ FAILED          │
@@ -86,27 +87,40 @@ A sophisticated **multi-model AI system** for solving complex mathematical probl
 pip install -r requirements.txt
 ```
 
-### 2. Configure API Keys
+### 2. Install Lean4 (Required for formal verification)
+
+```bash
+# Install elan (Lean4 version manager)
+curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y
+
+# Reload shell config
+source ~/.elan/env
+
+# Verify installation
+lean --version
+```
+
+### 3. Configure API Keys
 
 ```bash
 cp .env.example .env
 # Edit .env with your API keys
 ```
 
-### 3. Run
+### 4. Run
 
 ```bash
 # 🌐 Web UI (推奨)
-python main.py web
+python3 main.py web
 
 # CLI
-python main.py "Prove that the square root of 2 is irrational"
+python3 main.py "Prove that the square root of 2 is irrational"
 
 # Interactive mode
-python main.py --interactive
+python3 main.py --interactive
 ```
 
-### 4. Open Web UI
+### 5. Open Web UI
 
 Open [http://localhost:7860](http://localhost:7860) in your browser.
 
@@ -133,6 +147,40 @@ Open [http://localhost:7860](http://localhost:7860) in your browser.
 | Key | Model | Purpose |
 |-----|-------|---------|
 | `XAI_API_KEY` | Grok-4.2 Heavy | 創造的問題分解 |
+
+## 🔀 OpenRouter Support
+
+OpenRouterを使うと、**1つのAPIキーで複数のモデル**を使用できます。
+
+### OpenRouter対応モデル
+
+| Model | 対応 | 環境変数 |
+|-------|------|----------|
+| GPT | ✅ | `OPENAI_BASE_URL` |
+| Grok | ✅ | `XAI_BASE_URL` |
+| DeepSeek | ✅ | `DEEPSEEK_BASE_URL` |
+| Aristotle | ✅ | `HARMONIC_API_BASE` |
+| Claude | ❌ | 専用SDK使用 |
+| Gemini | ❌ | 専用SDK使用 |
+
+### OpenRouter設定例
+
+```bash
+# OpenRouter経由でGPTを使う
+OPENAI_API_KEY=sk-or-v1-your-openrouter-key
+OPENAI_BASE_URL=https://openrouter.ai/api/v1
+OPENAI_MODEL=openai/gpt-4o
+
+# OpenRouter経由でGrokを使う
+XAI_API_KEY=sk-or-v1-your-openrouter-key
+XAI_BASE_URL=https://openrouter.ai/api/v1
+XAI_MODEL=x-ai/grok-2
+
+# OpenRouter経由でDeepSeekを使う
+DEEPSEEK_API_KEY=sk-or-v1-your-openrouter-key
+DEEPSEEK_BASE_URL=https://openrouter.ai/api/v1
+DEEPSEEK_MODEL=deepseek/deepseek-chat
+```
 
 ## 📁 Project Structure
 
@@ -177,24 +225,34 @@ math_LLM/
 # Required
 OPENAI_API_KEY=sk-...
 GOOGLE_API_KEY=...
+ANTHROPIC_API_KEY=...
 
 # Required for Lean4 Verification
-HARMONIC_API_KEY=...      # Aristotle (Lean4 specialist)
-DEEPSEEK_API_KEY=...      # DeepSeek-Math (fallback for Lean4 code)
-LEAN4_PATH=/usr/local/bin/lean
+HARMONIC_API_KEY=...          # Aristotle (Lean4 specialist)
+DEEPSEEK_API_KEY=...          # DeepSeek-Math
+LEAN4_PATH=~/.elan/bin/lean   # Lean4 compiler path
 LEAN4_PROJECT_PATH=./lean_proofs
 
 # Optional
-XAI_API_KEY=...           # Grok-4.2
+XAI_API_KEY=...               # Grok-4.2
+
+# OpenRouter (Optional - use instead of direct API keys)
+# OPENAI_BASE_URL=https://openrouter.ai/api/v1
+# XAI_BASE_URL=https://openrouter.ai/api/v1
+# DEEPSEEK_BASE_URL=https://openrouter.ai/api/v1
+
+# Pipeline Configuration
 MAX_ITERATIONS=5
+CONFIDENCE_THRESHOLD=0.9
+VERBOSE=true
 ```
 
 ## 🧪 Testing
 
 ```bash
 pytest tests/ -v          # Run all tests
-python main.py test       # Quick test
-python main.py config     # Show configuration
+python3 main.py test      # Quick test
+python3 main.py config    # Show configuration
 ```
 
 ## 📄 License

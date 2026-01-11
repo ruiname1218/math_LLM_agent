@@ -46,7 +46,8 @@ class Config:
         model_id=os.getenv("OPENAI_MODEL", "gpt-4o"),  # Fallback to gpt-4o
         temperature=0.7,
         max_tokens=32768,
-        thinking_mode=True  # Extended thinking enabled
+        thinking_mode=True,  # Extended thinking enabled
+        base_url=os.getenv("OPENAI_BASE_URL")  # OpenRouter/compatible APIs
     ))
     
     grok: ModelConfig = field(default_factory=lambda: ModelConfig(
@@ -56,7 +57,7 @@ class Config:
         temperature=0.8,
         max_tokens=16384,
         thinking_mode=True,
-        base_url="https://api.x.ai/v1"
+        base_url=os.getenv("XAI_BASE_URL", "https://api.x.ai/v1")  # OpenRouter: https://openrouter.ai/api/v1
     ))
     
     gemini: ModelConfig = field(default_factory=lambda: ModelConfig(
@@ -83,7 +84,7 @@ class Config:
         model_id=os.getenv("DEEPSEEK_MODEL", "deepseek-chat"),  # Fallback
         temperature=0.6,
         max_tokens=16384,
-        base_url="https://api.deepseek.com/v1"
+        base_url=os.getenv("DEEPSEEK_BASE_URL", "https://api.deepseek.com/v1")  # OpenRouter: https://openrouter.ai/api/v1
     ))
     
     # Aristotle - Lean4 specialist from Harmonic AI

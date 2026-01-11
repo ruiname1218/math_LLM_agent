@@ -33,10 +33,15 @@ class GPTModel(BaseModel):
         )
         self._api_key = config.gpt.api_key
         self._thinking_mode = config.gpt.thinking_mode
+        self._base_url = config.gpt.base_url  # OpenRouter/compatible APIs
     
     async def initialize(self) -> None:
         """Initialize the OpenAI client."""
-        self._client = AsyncOpenAI(api_key=self._api_key)
+        # Support OpenRouter and other OpenAI-compatible APIs
+        if self._base_url:
+            self._client = AsyncOpenAI(api_key=self._api_key, base_url=self._base_url)
+        else:
+            self._client = AsyncOpenAI(api_key=self._api_key)
     
     async def generate(
         self,
