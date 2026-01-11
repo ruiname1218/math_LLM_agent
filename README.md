@@ -4,10 +4,10 @@ A sophisticated **multi-model AI system** for solving complex mathematical probl
 
 ## ✨ Features
 
-- **6-Model Orchestration**: GPT-5.2 Pro, Grok-4.2, Gemini 3, Claude Opus 4.5, DeepSeek-Math, **Aristotle**
-- **5-Stage Pipeline**: Decomposition → Diversification → Proof Generation → Verification → Integration
-- **Lean4-First Verification**: Formal proof verification as primary (100% confidence when rigorous)
-- **LLM Fallback**: Claude + GPT verification only when Lean4 unavailable
+- **6-Model Orchestration**: GPT-5.2 Pro, Grok-4.2, Gemini 3, DeepSeek-Math, **Aristotle**, Lean4
+- **5-Stage Pipeline**: Decomposition → Diversification → Proof Generation → **Lean4 Verification** → Integration
+- **Lean4 ONLY Verification**: 形式証明が必須 (LLMフォールバックなし)
+- **Aristotle**: Harmonic AIのLean4ネイティブ形式化モデル
 - **AlphaEvolve Exploration**: Pattern discovery through computational exploration
 - **Web UI**: Beautiful Gradio interface with real-time pipeline visualization
 
@@ -16,6 +16,7 @@ A sophisticated **multi-model AI system** for solving complex mathematical probl
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                        🧮 Ultimate Math Agent                                │
+│                      (Lean4 Only - No LLM Fallback)                         │
 └─────────────────────────────────────────────────────────────────────────────┘
 
                               ┌──────────────┐
@@ -41,18 +42,20 @@ A sophisticated **multi-model AI system** for solving complex mathematical probl
                                      │
                                      ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│  Stage 4: VERIFICATION                                                      │
+│  Stage 4: LEAN4 VERIFICATION (ONLY - NO FALLBACK)                           │
+│                                                                             │
 │  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │  🔬 Lean4 厳密検証 (PRIMARY)                                         │   │
-│  │  Aristotle (Lean4ネイティブ) → Lean4 Compiler                        │   │
-│  │  ※失敗時: DeepSeek-Math フォールバック                                │   │
+│  │  Aristotle → Lean4 Code → Lean4 Compiler                            │   │
+│  │       ↓ (失敗時最大3回修正)                                           │   │
+│  │  [エラー時] DeepSeek-Math でLean4コード再生成                          │   │
 │  └─────────────────────────────────────────────────────────────────────┘   │
 │                                     │                                       │
 │              ┌──────────────────────┼──────────────────────┐               │
 │              ▼                      ▼                      ▼               │
-│       Lean4 RIGOROUS          Lean4 FAILED           Lean4 N/A            │
-│       100% 確定!               → Stage 3              → LLM検証            │
-│       即座にPass                (再生成)              Claude+GPT           │
+│       ✅ RIGOROUS              ⚠️ PARTIAL              ❌ FAILED          │
+│       100% 確定!              sorry含む               コンパイル失敗        │
+│       → Stage 5               → 再生成                → 再生成            │
+│                                                        (エラー表示)        │
 └─────────────────────────────────────────────────────────────────────────────┘
                                      │
                                      ▼
@@ -60,23 +63,18 @@ A sophisticated **multi-model AI system** for solving complex mathematical probl
 │  Stage 5: INTEGRATION                                                       │
 │  GPT-5.2 Pro → 最終統合 + Lean4コード添付                                   │
 └─────────────────────────────────────────────────────────────────────────────┘
-                                     │
-                                     ▼
-                              ┌──────────────┐
-                              │  Final Proof │
-                              └──────────────┘
 ```
 
-## 🔬 Verification Logic (Lean4 First)
+## 🔬 Verification Logic (Lean4 ONLY)
 
-| 優先度 | 条件 | 結果 | 信頼度 |
-|--------|------|------|--------|
-| 1️⃣ | Lean4 厳密検証 (rigorous) | **即座にPass** | 100% |
-| 2️⃣ | Lean4 失敗 & 未達max | 再生成 (Stage 3へ) | - |
-| 3️⃣ | Lean4無効 & Claude OK & ≥90% | Pass (LLMフォールバック) | 90%+ |
-| 4️⃣ | Lean4部分 & Claude OK | Pass (部分検証) | 85% |
+| 結果 | 条件 | アクション | 信頼度 |
+|------|------|------------|--------|
+| ✅ RIGOROUS | Lean4コンパイル成功 + sorry無し | **Pass** | 100% |
+| ⚠️ PARTIAL | Lean4コンパイル成功 + sorry含む | 再生成 | 0% |
+| ❌ FAILED | Lean4コンパイル失敗 | 再生成 (エラー表示) | 0% |
+| ❌ ERROR | Lean4/Aristotle未設定 | **停止** (エラー表示) | 0% |
 
-**Lean4が厳密検証を通過すれば、LLMの意見は不要** → 数学的に100%正しい
+> ⚠️ **LLMフォールバックは無し** - Lean4形式検証が唯一の検証方法です
 
 ## 🚀 Quick Start
 
@@ -99,7 +97,7 @@ cp .env.example .env
 # 🌐 Web UI (推奨)
 python main.py web
 
-# CLI: Solve a problem
+# CLI
 python main.py "Prove that the square root of 2 is irrational"
 
 # Interactive mode
@@ -113,19 +111,25 @@ Open [http://localhost:7860](http://localhost:7860) in your browser.
 ## 📋 Requirements
 
 ### Required API Keys
-| Key | Model | Required |
-|-----|-------|----------|
-| `OPENAI_API_KEY` | GPT-5.2 Pro | ✅ |
-| `GOOGLE_API_KEY` | Gemini 3 Pro | ✅ |
-| `ANTHROPIC_API_KEY` | Claude Opus 4.5 | ✅ |
 
-### Optional (Recommended)
 | Key | Model | Purpose |
 |-----|-------|---------|
-| `HARMONIC_API_KEY` | **Aristotle** | Lean4ネイティブ形式化 |
-| `DEEPSEEK_API_KEY` | DeepSeek-Math-V2 | 証明推敲 + Lean4フォールバック |
+| `OPENAI_API_KEY` | GPT-5.2 Pro | 中央コーディネーター |
+| `GOOGLE_API_KEY` | Gemini 3 Pro | AlphaEvolve探索 |
+
+### Required for Lean4 Verification
+
+| Key | Model | Purpose |
+|-----|-------|---------|
+| `HARMONIC_API_KEY` | **Aristotle** | Lean4コード生成 (推奨) |
+| `DEEPSEEK_API_KEY` | DeepSeek-Math | Lean4フォールバック |
+| `LEAN4_PATH` | Lean4 | 形式検証コンパイラ |
+
+### Optional
+
+| Key | Model | Purpose |
+|-----|-------|---------|
 | `XAI_API_KEY` | Grok-4.2 Heavy | 創造的問題分解 |
-| `LEAN4_PATH` | Lean4 Compiler | 形式検証 |
 
 ## 📁 Project Structure
 
@@ -133,12 +137,11 @@ Open [http://localhost:7860](http://localhost:7860) in your browser.
 math_LLM/
 ├── main.py                 # CLI entry point
 ├── web_ui.py               # Gradio Web UI
-├── config.py               # Configuration management
+├── config.py               # Configuration
 ├── models/                 # LLM interfaces (6 models)
 │   ├── gpt_model.py        # GPT-5.2 Pro
 │   ├── grok_model.py       # Grok-4.2 Heavy
 │   ├── gemini_model.py     # Gemini 3 Pro
-│   ├── claude_model.py     # Claude Opus 4.5
 │   ├── deepseek_model.py   # DeepSeek-Math-V2
 │   └── aristotle_model.py  # Aristotle (Lean4 specialist)
 ├── pipeline/               # LangGraph pipeline
@@ -157,13 +160,30 @@ math_LLM/
 
 | Model | Stage | Role |
 |-------|-------|------|
-| **GPT-5.2 Pro** | 1,2,3,4,5 | 中央コーディネーター |
+| **GPT-5.2 Pro** | 1,2,3,5 | 中央コーディネーター |
 | **Grok-4.2 Heavy** | 1 | 創造的問題分解 |
 | **Gemini 3 Pro** | 2 | AlphaEvolve探索コード生成 |
-| **DeepSeek-Math-V2** | 3,4 | 証明推敲 + Lean4フォールバック |
-| **Claude Opus 4.5** | 4 | 論理検証 (LLMフォールバック) |
+| **DeepSeek-Math-V2** | 3,4 | 証明推敲 + Lean4コード生成 |
 | **Aristotle** | 4 | Lean4形式化 (PRIMARY) |
 | **Lean4** | 4 | 形式証明コンパイラ |
+
+## 🔧 Environment Variables
+
+```bash
+# Required
+OPENAI_API_KEY=sk-...
+GOOGLE_API_KEY=...
+
+# Required for Lean4 Verification
+HARMONIC_API_KEY=...      # Aristotle (Lean4 specialist)
+DEEPSEEK_API_KEY=...      # DeepSeek-Math (fallback for Lean4 code)
+LEAN4_PATH=/usr/local/bin/lean
+LEAN4_PROJECT_PATH=./lean_proofs
+
+# Optional
+XAI_API_KEY=...           # Grok-4.2
+MAX_ITERATIONS=5
+```
 
 ## 🧪 Testing
 
@@ -173,33 +193,12 @@ python main.py test       # Quick test
 python main.py config     # Show configuration
 ```
 
-## 🔧 Environment Variables
-
-```bash
-# Required
-OPENAI_API_KEY=sk-...
-GOOGLE_API_KEY=...
-ANTHROPIC_API_KEY=sk-ant-...
-
-# Recommended
-HARMONIC_API_KEY=...      # Aristotle (Lean4 specialist)
-DEEPSEEK_API_KEY=...      # DeepSeek-Math-V2
-XAI_API_KEY=...           # Grok-4.2
-
-# Lean4
-LEAN4_PATH=/usr/local/bin/lean
-LEAN4_PROJECT_PATH=./lean_proofs
-
-# Pipeline
-MAX_ITERATIONS=5
-```
-
 ## 📄 License
 
 MIT License
 
 ## 🙏 Acknowledgments
 
-- Aristotle by Harmonic AI - Lean4-native theorem proving
+- **Aristotle** by Harmonic AI - Lean4-native theorem proving (IMO 2025 Gold)
 - Inspired by AlphaProof and AlphaEvolve from Google DeepMind
 - Built with LangGraph for multi-agent orchestration
