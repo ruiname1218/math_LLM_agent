@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+.env
+.env.local
+venv/
+.vscode/
+.idea/
+lean_proofs/
+.lake/
+*.log
+.DS_Store
+.pytest_cache/
