@@ -4,7 +4,7 @@ A sophisticated **multi-model AI system** for solving complex mathematical probl
 
 ## ✨ Features
 
-- **6-Model Orchestration**: GPT-5.2 Pro, Grok-4.2, Gemini 3, DeepSeek-Math, **Aristotle**, Lean4
+- **6-Model Orchestration**: GPT-5.2 Pro, Gemini 3, **Aristotle**, Lean4
 - **5-Stage Pipeline**: Decomposition → Diversification → Proof Generation → **Lean4 Verification** → Integration
 - **Lean4 ONLY Verification**: 形式証明が必須 (LLMフォールバックなし)
 - **Aristotle**: Harmonic AIのLean4ネイティブ形式化モデル
@@ -26,21 +26,20 @@ A sophisticated **multi-model AI system** for solving complex mathematical probl
                                      ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │  Stage 1: DECOMPOSITION (3-Model Parallel)                                  │
-│  ├── GPT-5.2 Pro      → 10-20 アプローチ仮説生成                             │
-│  ├── Grok-4.2 Heavy   → 創造的・非従来型の分析                               │
+│  ├── GPT-5.2 Pro      → 10-20 アプローチ仮説生成                                                       │
 │  └── Claude Opus 4.5  → 反例探索・エッジケース・罠の検出                      │
 └─────────────────────────────────────────────────────────────────────────────┘
                                      │
                                      ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │  Stage 2: DIVERSIFICATION                                                   │
-│  Gemini 3 Pro (AlphaEvolve探索) + GPT-5.2 Pro (深い分析) → 並列実行          │
+│  Gemini 3 Pro  + GPT-5.2 Pro (深い分析) → 並列実行          │
 └─────────────────────────────────────────────────────────────────────────────┘
                                      │
                                      ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │  Stage 3: PROOF GENERATION                                                  │
-│  GPT-5.2 Pro (証明スケッチ) → DeepSeek-Math-V2 (推敲・自己修正)              │
+│  GPT-5.2 Pro (証明スケッチ) →               │
 └─────────────────────────────────────────────────────────────────────────────┘
                                      │
                                      ▼
@@ -50,7 +49,7 @@ A sophisticated **multi-model AI system** for solving complex mathematical probl
 │  ┌─────────────────────────────────────────────────────────────────────┐   │
 │  │  Aristotle → Lean4 Code → Lean4 Compiler                            │   │
 │  │       ↓ (失敗時最大3回修正)                                           │   │
-│  │  [エラー時] DeepSeek-Math でLean4コード再生成                          │   │
+│  │  [エラー時] claude でLean4コード再生成                          │   │
 │  └─────────────────────────────────────────────────────────────────────┘   │
 │                                    │                                       │
 │              ┌──────────────────────┼──────────────────────┐               │
