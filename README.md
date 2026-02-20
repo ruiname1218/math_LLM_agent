@@ -130,7 +130,7 @@ Open [http://localhost:7860](http://localhost:7860) in your browser.
 | Key | Model | Purpose |
 |-----|-------|---------|
 | `OPENAI_API_KEY` | GPT-5.2 Pro | 中央コーディネーター |
-| `GOOGLE_API_KEY` | Gemini 3 Pro | AlphaEvolve探索 |
+| `GOOGLE_API_KEY` | Gemini 3 Pro | 
 | `ANTHROPIC_API_KEY` | Claude Opus 4.5 | 反例・エッジケース分析 |
 
 ### Required for Lean4 Verification
@@ -138,14 +138,9 @@ Open [http://localhost:7860](http://localhost:7860) in your browser.
 | Key | Model | Purpose |
 |-----|-------|---------|
 | `HARMONIC_API_KEY` | **Aristotle** | Lean4コード生成 (推奨) |
-| `DEEPSEEK_API_KEY` | DeepSeek-Math | Lean4フォールバック |
 | `LEAN4_PATH` | Lean4 | 形式検証コンパイラ |
 
-### Optional
 
-| Key | Model | Purpose |
-|-----|-------|---------|
-| `XAI_API_KEY` | Grok-4.2 Heavy | 創造的問題分解 |
 
 ## 🔀 OpenRouter Support
 
@@ -156,8 +151,6 @@ OpenRouterを使うと、**1つのAPIキーで複数のモデル**を使用で�
 | Model | 対応 | 環境変数 |
 |-------|------|----------|
 | GPT | ✅ | `OPENAI_BASE_URL` |
-| Grok | ✅ | `XAI_BASE_URL` |
-| DeepSeek | ✅ | `DEEPSEEK_BASE_URL` |
 | Aristotle | ✅ | `HARMONIC_API_BASE` |
 | Claude | ❌ | 専用SDK使用 |
 | Gemini | ❌ | 専用SDK使用 |
@@ -228,17 +221,13 @@ ANTHROPIC_API_KEY=...
 
 # Required for Lean4 Verification
 HARMONIC_API_KEY=...          # Aristotle (Lean4 specialist)
-DEEPSEEK_API_KEY=...          # DeepSeek-Math
 LEAN4_PATH=~/.elan/bin/lean   # Lean4 compiler path
 LEAN4_PROJECT_PATH=./lean_proofs
 
 # Optional
-XAI_API_KEY=...               # Grok-4.2
 
 # OpenRouter (Optional - use instead of direct API keys)
 # OPENAI_BASE_URL=https://openrouter.ai/api/v1
-# XAI_BASE_URL=https://openrouter.ai/api/v1
-# DEEPSEEK_BASE_URL=https://openrouter.ai/api/v1
 
 # Pipeline Configuration
 MAX_ITERATIONS=5
